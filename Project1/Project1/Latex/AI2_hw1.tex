@@ -1,0 +1,179 @@
+\documentclass[12pt]{report}
+
+% packages used for many things
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+\urlstyle{same}
+% package used for the enumeration
+\usepackage{enumitem}
+% packages used to write more symbols and text in math mode
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{amsfonts} 
+\usepackage{amssymb}
+\usepackage{MnSymbol}
+\usepackage{csquotes}
+\usepackage{arydshln}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+
+% \usepackage{geometry}
+%  \geometry{
+%  a4paper,
+%  total={170mm,257mm},
+%  left=20mm,
+%  top=15mm,
+%  }
+
+
+% for images
+\usepackage{graphicx}
+\graphicspath{{./}}
+
+% qed black square
+\newcommand*{\QEDA}{\hfill\ensuremath{\blacksquare}}
+% xor symbol
+\newcommand*\xor{\oplus}
+
+\title{Artificial Intelligence II \\ Assignment 1 Report}
+\author{Andreas - Theologos Spanopoulos (sdi1700146@di.uoa.gr)}
+\date{October 5, 2020}
+
+
+% ----------------    START OF DOCUMENT    ------------ %
+\begin{document}
+\maketitle
+
+% % ------------------      EXERCISE 1      ------------------ %
+% \section*{Exercise 1}
+% The Ridge Regression loss function is defined as:
+
+% \begin{equation}
+%     J(w) \;=\; \text{MSE}(w) + \lambda\frac{1}{2}\sum_{i=1}^n w_i^2
+%          \;=\; \frac{1}{m} \sum_{i=1}^m \left(h_w(x^{(i)}) - y^{(i)}\right)^2 + \lambda\frac{1}{2}\sum_{j=1}^n w_j^2 \\
+% \end{equation}
+% where $\lambda$ is the regularization parameter.
+% We know that for Linear Regression the hypothesis function $h_w(x)$ is a linear product of the vectors
+
+% \begin{align*}
+%     w &= 
+%         \begin{bmatrix}
+%             w_0 \\
+%             w_1 \\
+%             w_2 \\           
+%             \vdots \\
+%             w_n
+%         \end{bmatrix}
+%     ,\;\;\;x = 
+%         \begin{bmatrix}
+%             1 \\
+%             x_1 \\
+%             x_2 \\
+%             \vdots \\
+%             x_n
+%         \end{bmatrix}
+% \end{align*}
+
+% \noindent Which is calculated as follows: $$h_w(x) \;=\; w^Tx \;=\; \sum_{j=0}^n w_jx_j$$
+% Thus we can compute the partial derivative of $h_w(x)$ w.r.t. any parameter $w_k$ as follows
+% $$\frac{\partial h_w(x)}{\partial w_k} \;=\;
+% \frac{\partial}{\partial w_k} \left(\sum_{j=0}^n w_jx_j \right) \;=\;
+% x_k$$
+
+% \noindent Now that we have defined some basic terms, we can go ahead and compute the gradient of the loss function $J(W)$:
+
+% \begin{align*}
+%     \frac{\partial J}{\partial w} &=
+%     \renewcommand\arraystretch{1.8}
+%         \begin{bmatrix}
+%             \frac{\partial J(w)}{\partial w_0} \\
+%             \frac{\partial J(w)}{\partial w_1} \\
+%             \frac{\partial J(w)}{\partial w_2} \\
+%             \vdots \\
+%             \frac{\partial J(w)}{\partial w_n}
+%         \end{bmatrix}
+% \end{align*}
+
+% \noindent Since the loss funtion $J(w)$ is \textquote{symmetric} w.r.t. its weights,
+% it is enough to compute only one partial derivative
+% $\frac{\partial J(w_j)}{\partial w_j}$ and then the results generalizes
+
+% \begin{equation*}
+%     \begin{aligned}
+%         \frac{\partial J(w)}{\partial w_k} \;&=\;
+%             \frac{\partial}{\partial w_k} \left( \frac{1}{m} \sum_{i=1}^m \left(h_w(x^{(i)}) - y^{(i)} \right)^2 \;+\;
+%             \lambda \frac{1}{2} \sum_{j=1}^n w_j^2 \right) \\[8pt]
+%         &=\; \frac{1}{m} \sum_{i=1}^m \frac{\partial}{\partial w_k} \left[ \left(h_w(x^{(i)}) - y^{(i)} \right)^2 \right] \;+\;
+%             \lambda \frac{1}{2} \frac{\partial}{\partial w_k}  \sum_{j=1}^n w_j^2 \\[8pt]
+%         &=\; \frac{2}{m} \sum_{i=1}^m \left(h_w(x^{(i)}) - y^{(i)} \right)x_k^{(i)} +
+%             \lambda w_k
+%     \end{aligned}
+% \end{equation*}
+% for $k = 1, 2.., n$. For $k=0$, the partial derivate w.r.t. $w_0$ is the same as the above equation, with the only difference that the last term is 0 (regularization does not apply to the bias parameter).
+% \bigskip
+
+% \noindent Therefore, we can now compute the gradient of the loss function as follows:
+
+% \begin{align*}
+%     \frac{\partial J}{\partial w} &=
+%     \renewcommand\arraystretch{2.0}
+%         \begin{bmatrix}
+%             \frac{2}{m} \sum\limits_{i=1}^m \left(h_w(x^{(i)}) - y^{(i)} \right) \\
+%             \frac{2}{m} \sum\limits_{i=1}^m \left(h_w(x^{(i)}) - y^{(i)} \right)x_1^{(i)} + \lambda w_1 \\
+%             \frac{2}{m} \sum\limits_{i=1}^m \left(h_w(x^{(i)}) - y^{(i)} \right)x_2^{(i)} + \lambda w_2 \\
+%             \vdots \\
+%             \frac{2}{m} \sum\limits_{i=1}^m \left(h_w(x^{(i)}) - y^{(i)} \right)x_n^{(i)} + \lambda w_n
+%         \end{bmatrix}
+%     =
+%     % \renewcommand\arraystretch{2.0}
+%     \begin{bmatrix}
+%         \frac{2}{m} \sum\limits_{i=1}^m \left(w^Tx^{(i)} - y^{(i)} \right) \\
+%         \frac{2}{m} \sum\limits_{i=1}^m \left(w^Tx^{(i)} - y^{(i)} \right)x_1^{(i)} \\
+%         \frac{2}{m} \sum\limits_{i=1}^m \left(w^Tx^{(i)} - y^{(i)} \right)x_2^{(i)} \\
+%         \vdots \\
+%         \frac{2}{m} \sum\limits_{i=1}^m \left(w^Tx^{(i)} - y^{(i)} \right)x_n^{(i)} 
+%     \end{bmatrix}
+%     + \lambda
+%     % \renewcommand\arraystretch{2.0}
+%     \begin{bmatrix}
+%         0 \\
+%         w_1 \\
+%         w_2 \\
+%         \vdots \\
+%         w_n
+%     \end{bmatrix}
+% \end{align*}
+
+% \noindent This finally leaves us with
+% $$\nabla J \;=\;
+% \frac{2}{m}\left(X^T\left(Xw - Y\right)\right) +
+% \lambda[0 \,\; w_1 \,\; w_2 \,\; ... \,\; w_n]^T$$
+% \noindent where
+% \begin{itemize}
+%     \item $X$ is the \textbf{design} matrix of shape $m \times n$, where every row consists of a training example $x^{(i)}$.
+%     \item $Y$ is the \textbf{label} matrix of shape $m \times 1$, where every row $i$ consists of a label (target value) $y^{(i)}$ for the specific training example $x^{(i)}$.
+% \end{itemize} \clearpage
+
+
+% ------------------      EXERCISE 2      ------------------ %
+\section*{Exercise 2}
+This exercise is pretty straightforward. I implemented manually the different gradient descent
+algorithms. Also, I implelented manually a Grid Search class in order to tune the hyper-parameters.
+I have added plenty of comments and text in the notebook, to make clear every step I choose to take,
+and the reason for taking this step. If there is one thing that could be added, it's an explanation
+of why the model is not underfitting/overfitting. I will do that here:
+
+\begin{itemize}
+    \item \textbf{Why the model is not underfitting}
+\end{itemize}
+
+\end{document}
+% ----------------    END OF DOCUMENT    ------------ %
