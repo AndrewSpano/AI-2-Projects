@@ -169,11 +169,57 @@ This exercise is pretty straightforward. I implemented manually the different gr
 algorithms. Also, I implelented manually a Grid Search class in order to tune the hyper-parameters.
 I have added plenty of comments and text in the notebook, to make clear every step I choose to take,
 and the reason for taking this step. If there is one thing that could be added, it's an explanation
-of why the model is not underfitting/overfitting. I will do that here:
+of why the model is not underfitting/overfitting. I will do that very briefly here:
 
 \begin{itemize}
-    \item \textbf{Why the model is not underfitting}
+    \item \underline{\textbf{Why the model is not underfitting}}
+        \bigskip
+
+        We can take a look at the learning curves inside the Notebook to gain insight.
+        If the model was underfitting, then 
+        
+        \begin{enumerate}
+            \item The training loss would be converging (increasingly) to a non-minimum value.
+            \item The validation loss would be very close to the training loss.
+        \end{enumerate}
+        The second bullet matches our graphs, but the first one doesn't.
+        \bigskip
+
+        The main reasons why a model would underfit are:
+        \begin{itemize}
+            \item There are not enough features, that is, the model is too simple.
+            \item The regularization parameter $\lambda$ is set too high.
+        \end{itemize}
+        None of those cases apply to our occasion.
+        \bigskip
+        
+
+    \item \underline{\textbf{Why the model is not overrfitting}}
+        \bigskip
+
+        Again by taking a look at the learning curves inside the Notebook, we can deduce that the model is
+        not overfitting, because if it was, then
+
+        \begin{enumerate}
+            \item The model would not be able to generalize, that is, there would be a notable gap between
+                training loss and the validaiton loss.
+        \end{enumerate}
+        This is not our case, as we can clearly see that in the graphs.
+        \bigskip
+
+        The main reasons why a model would overfit are:
+        \begin{itemize}
+            \item There are too many features, that is, the model is too complicated.
+            \item The regularization parameter $\lambda$ is set too low.
+            \item There are not enough training examples $x^{(i)}$.
+            \item There is no diversity in the training set.
+        \end{itemize}
+        None of those cases apply to our occasion.
 \end{itemize}
+
+
+% ------------------      EXERCISE 3      ------------------ %
+\section*{Exercise 3}
 
 \end{document}
 % ----------------    END OF DOCUMENT    ------------ %
