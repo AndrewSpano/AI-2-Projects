@@ -56,12 +56,53 @@
 
 % ------------------------------      EXERCISE 1      ----------------------------------- %
 \section*{Exercise 1}
-Let $y(\textbf{x}) = \textbf{w}^T\textbf{x} \,+\, w_0$ be a linear discriminant in the
-\textquote{n-th} dimensional space. In order to compute its distance from the origin,
-we must consider the linear discriminant $y_{origin}$ which is \textquote{parallel} to
-$y(\textbf{x})$, but passes through the origin. This function is defined as
-$y_{origin}(\textbf{x}) = \textbf{w}^T\textbf{x}$. It is quite trivial that $y$ and
-$y_{origin}$ have the exact same slopes, and they only differ by a constant $w_0$.
+\begin{enumerate}
+    \item Equation (4.5) can be trivially proven as follows. Since point $\textbf{x}$ lies
+        in the decision surface, then it follows that
+        \begin{align*}
+            y(\textbf{x}) = 0 \;\Leftrightarrow\; \textbf{w}^T\textbf{x} + w_0 = 0 \;\Leftrightarrow\;
+            \textbf{w}^T\textbf{x} = -w_0
+        \end{align*}
+        Dividing both sides by $||\textbf{w}||$ yields $$\frac{\textbf{w}^T\textbf{x}}{||\textbf{w}||}
+        = -\frac{w_0}{||\textbf{w}||}$$
+        which is what we wanted to prove. \QEDA
+        \smallskip
+
+    \item Equation (4.6) is a bit harder to prove. First we have to recall the
+        \href{https://mathworld.wolfram.com/OrthogonalDecomposition.html}{Orthogonal
+        Decomposition Theorem} which states that if $W$ is a subspace of $\mathbb{R}^n$, then any
+        vector $\textbf{x}$ can be \textquote{decomposed} in a sum of two vectors
+        $\textbf{x}_{\perp}$ and $\textbf{z}$, where $\textbf{x}_{\perp}$ is the
+        orthogonal projection of $\textbf{x}$ on $W$ and $\textbf{z}$ is a vector orthogonal
+        to $\textbf{x}_{\perp}$.
+
+        In our case, the subspace $W$ is defined as
+        $$W \;=\; \{\textbf{x} \in \mathbb{R}^n\;\,|\;\, y(\textbf{x}) = 0\}$$
+        And therefore $\textbf{x}$ can be expressed as
+        $$\textbf{x} \;=\; \textbf{x}_{\perp} + \textbf{z}$$
+        So to prove equation (4.6), we just need to show that
+        \begin{equation}
+            \textbf{z} \;=\; r \frac{\textbf{w}}{||\textbf{w}||}  
+        \end{equation}
+
+        From the big paragraph in page 181 of the \textquote{Pattern Recognition and Machine Learning}
+        textbook, we know that $\textbf{w}$ is orthogonal to every vector lying within the decision
+        surface, which makes it parallel to $\textbf{z}$.
+
+        Therefore, $\textbf{z}$ can be expressed as
+        \begin{equation}
+            \textbf{z} \;=\; \alpha \, \textbf{w}  
+        \end{equation}
+        for some arbitrary $\alpha$.
+
+        Also, we know that the norm of $\textbf{z}$, that is, $||\textbf{z}||$, is equal to $r$ (from
+        the definition of $r$). Thus, we can write
+        $$||\textbf{z}|| \,=\, r \;\Leftrightarrow\; ||\alpha \, \textbf{w}|| \,=\, r \;\Leftrightarrow\;
+          \alpha ||\textbf{w}|| \,=\, r \;\Leftrightarrow\; \alpha \,=\, \frac{r}{||\textbf{w}||}$$
+        which if substituted with equations (2) and (1), yields
+        $$\textbf{x} \;=\; \textbf{x}_{\perp} \,+\, r \, \frac{\textbf{w}}{||\textbf{w}||}$$ \QEDA
+\end{enumerate}
+
 
 
 
