@@ -58,7 +58,7 @@
 \section*{Exercise 1}
 \begin{enumerate}
     \item Equation (4.5) can be trivially proven as follows. Since point $\textbf{x}$ lies
-        in the decision surface, then it follows that
+        on the decision surface, then it follows that
         \begin{align*}
             y(\textbf{x}) = 0 \;\Leftrightarrow\; \textbf{w}^T\textbf{x} + w_0 = 0 \;\Leftrightarrow\;
             \textbf{w}^T\textbf{x} = -w_0
@@ -111,14 +111,14 @@
 \section*{Exercise 2}
 Let's start by defining our variables in a readable matrix form:
 \begin{align*}
-    x \;=\;
+    \textbf{x} \;=\;
     \begin{bmatrix}
         x_1 & x_2 & \cdots & x_n
     \end{bmatrix}
 \end{align*}
 and
 \begin{align*}
-    W \;=\;
+    \textbf{W} \;=\;
     \renewcommand\arraystretch{1.65}
     \begin{bmatrix}
         w_{11} & w_{12} & \cdots & w_{1m} \\
@@ -127,9 +127,9 @@ and
         w_{n1} & w_{n2} & \cdots & w_{nm}
     \end{bmatrix}
 \end{align*}
-Then, $z$ becomes
+Then, $\textbf{z}$ becomes
 \begin{align*}
-    z \;=\; xW \;=\;
+    \textbf{z} \;=\; \textbf{xW} \;=\;
     \renewcommand\arraystretch{1.65}
     \begin{bmatrix}
         \sum\limits_{i=1}^n x_iw_{i1} & \sum\limits_{i=1}^n x_iw_{i2}
@@ -138,7 +138,7 @@ Then, $z$ becomes
 \end{align*}
 and so we have that
 \begin{align*}
-    \frac{\partial z}{\partial x} \;=\;
+    \frac{\partial \textbf{z}}{\partial \textbf{x}} \;=\;
     \renewcommand\arraystretch{1.8}
     \begin{bmatrix}
         \frac{\partial \sum\limits_{i=1}^n x_iw_{i1}}{\partial x_1} &
@@ -150,10 +150,10 @@ and so we have that
         \cdots &
         \frac{\partial \sum\limits_{i=1}^n x_iw_{im}}{\partial x_2} \\
         \vdots & \vdots & \ddots & \cdots \\
-        \frac{\partial \sum\limits_{i=1}^n x_iw_{i1}}{\partial x_m} &
-        \frac{\partial \sum\limits_{i=1}^n x_iw_{i2}}{\partial x_m} &
+        \frac{\partial \sum\limits_{i=1}^n x_iw_{i1}}{\partial x_n} &
+        \frac{\partial \sum\limits_{i=1}^n x_iw_{i2}}{\partial x_n} &
         \cdots &
-        \frac{\partial \sum\limits_{i=1}^n x_iw_{im}}{\partial x_m} \\
+        \frac{\partial \sum\limits_{i=1}^n x_iw_{im}}{\partial x_n} \\
     \end{bmatrix}
 \end{align*}
 which is (obviously) equal to
@@ -165,7 +165,7 @@ which is (obviously) equal to
         \vdots & \vdots & \ddots & \cdots \\
         w_{n1} & w_{n2} & \cdots & w_{nm}
     \end{bmatrix}
-    \;=\; W
+    \;=\; \textbf{W}
 \end{align*}
 
 \clearpage
@@ -174,14 +174,14 @@ which is (obviously) equal to
 \section*{Exercise 3}
 Again, let's define the variables in their readable matrix form:
 \begin{align*}
-    x \,=\,
+    \textbf{x} \,=\,
     \begin{bmatrix}
         x_1 \\
         x_2 \\
         \vdots \\
         x_n
     \end{bmatrix}
-    ,\; w \,=\,
+    ,\; \textbf{w} \,=\,
     \begin{bmatrix}
         w_1 \\
         w_2 \\
@@ -191,12 +191,12 @@ Again, let's define the variables in their readable matrix form:
 \end{align*}
 Also, the sigmoid (or logistic) activation function $\sigma(x)$ is defined as:
 $$\sigma(x) \;=\; \frac{1}{1 + e^{-x}}$$
-which composed with $x^Tw$ gives
-$$\sigma(x^Tw) \;=\; \frac{1}{1 + e^{-x^Tw}}
-               \;=\; \frac{1}{1 + e^{-\sum\limits_{i=1}^n x_iw_i}}$$
-Thus, the gradient of $\hat{y} \,=\, \sigma(x^Tw)$ w.r.t. $w$ can be calculated as
+which composed with $\textbf{x}^T\textbf{w}$ gives
+$$\sigma(\textbf{x}^T\textbf{w}) \;=\; \frac{1}{1 + e^{-\textbf{x}^T\textbf{w}}}
+                                 \;=\; \frac{1}{1 + e^{-\sum\limits_{i=1}^n x_iw_i}}$$
+Thus, the gradient of $\hat{y} \,=\, \sigma(\textbf{x}^T\textbf{w})$ w.r.t. $w$ can be calculated as
 \begin{align*}
-    \frac{\partial \hat{y}}{\partial w} \;=\;
+    \frac{\partial \hat{y}}{\partial \textbf{w}} \;=\;
     \renewcommand\arraystretch{1.5}
     \begin{bmatrix}
         \frac{\partial \hat{y}}{\partial w_1} & \frac{\partial \hat{y}}{\partial w_2} &
@@ -217,7 +217,7 @@ as follows:
 \end{align*}
 which makes the gradient of $\hat{y}$ be equal to:
 \begin{align*}
-    \frac{\partial \hat{y}}{\partial w} \;=&\;
+    \frac{\partial \hat{y}}{\partial \textbf{w}} \;=&\;
     \renewcommand\arraystretch{1.5}
     \begin{bmatrix}
         x_1 \,\hat{y}\, (1 - \hat{y}) \\
@@ -233,7 +233,7 @@ which makes the gradient of $\hat{y}$ be equal to:
         \vdots \\
         x_n
     \end{bmatrix}
-    =\; \hat{y}(1 - \hat{y})x
+    =\; \hat{y}(1 - \hat{y})\textbf{x}
 \end{align*}
 \clearpage
 
@@ -620,7 +620,7 @@ better? We have the following metrics, measured in the same test set:
     \item The Loss of the first model is smaller than the loss of the second.
     \item Accuracy of the first model is better than the accuracy of the second.
     \item F1 score of the first model is better than the F1 score of the second.
-    \item The are under the ROC curve of the first model is bigger than that of
+    \item The area under the ROC curve of the first model is bigger than that of
         the second.
 \end{enumerate}
 There 4 metrics point us to the fact that the first model performs better.

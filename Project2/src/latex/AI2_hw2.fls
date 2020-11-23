@@ -313,6 +313,7 @@ INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/mnsymbol/MnSymbol12.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/mnsymbol/MnSymbol6.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/mnsymbol/MnSymbol8.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
+INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb
