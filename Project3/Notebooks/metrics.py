@@ -82,8 +82,8 @@ def compute_metrics(model, X_train, y_train, X_val, y_val, loss, metrics):
     val_acc = accuracy(y_val_pred, y_val)
 
     # compute the F1 scores
-    train_f1 = f1_score(y_train_pred, y_train)
-    val_f1 = f1_score(y_val_pred, y_val)
+    train_f1 = F1_score(y_train_pred, y_train)
+    val_f1 = F1_score(y_val_pred, y_val)
 
     # append everything to the lists
     metrics["train_losses"].append(train_loss)
@@ -94,16 +94,16 @@ def compute_metrics(model, X_train, y_train, X_val, y_val, loss, metrics):
     metrics["val_f1"].append(val_f1)
 
 
-def log_metrics(epoch, step, metrics):
+def log_metrics(epoch, metrics):
     """ Function to print the metrics of the last batch during the training of a model """
-    print(f'Epoch: {epoch}, Step: {step}')
-    print('\t\t\tAverage Training Loss: {:.2f}, Average Validation Loss: {:.2f}\n\t\t\t'
+    print(f'Epoch: {epoch}')
+    print('\t\tAverage Training Loss: {:.2f}, Average Validation Loss: {:.2f}\n\t\t'
           'Average Training Accuracy: {:.2f}, '
           'Average Validation Accuracy: {:.2f}'.format(metrics['train_losses'][-1],
                                                        metrics['val_losses'][-1],
                                                        metrics['train_accuracies'][-1],
                                                        metrics['val_accuracies'][-1]))
-    print('\t\t\tAverage Training F1-score: {:.2f}, '
+    print('\t\tAverage Training F1-score: {:.2f}, '
           'Average Validation F1-score: {:.2f}\n'.format(metrics['train_f1'][-1],
                                                          metrics['val_f1'][-1]))
 

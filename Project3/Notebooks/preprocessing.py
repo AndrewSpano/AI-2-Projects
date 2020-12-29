@@ -54,6 +54,12 @@ def remove_most_punctuation(sentence):
     # now substitute groups  question marks (?)  with one question mark (?) separated by spaces
     result = re.sub(r"\?+", " ? ", result, flags=re.MULTILINE)
     return result
+    
+
+def remove_all_punctuation(sentence):
+    # remove all punctuations
+    result = re.sub(r"(!|@|#|\$|%|\^|&|\*|\(|\)|-|_|\+|=|,|\.|<|>|\/|\?|;|:|\"|'|`|~|\[|\]|{|})+", '', sentence, flags=re.MULTILINE)
+    return result
 
 
 def remove_numbers(sentence):
@@ -92,19 +98,37 @@ def stem_words(sentence, stemmer):
     return result
 
 
+# def main_pipeline(sentence, language="english"):
+#     """ The main pipeline every sentence should follow """
+#     stop_words = stopwords.words(language)
+#     stemmer = PorterStemmer()
+
+#     result = remove_urls(sentence)
+#     result = remove_twitter_tags(result)
+#     result = remove_retweet_token(result)
+#     result = remove_tickers(result)
+#     result = remove_most_punctuation(result)
+#     result = remove_numbers(result)
+#     result = remove_multiple_whitespace(result)
+#     result = strip_whitespaces(result)
+#     result = convert_to_lowercase(result)
+#     # result = remove_stopwords(result, stop_words)
+#     # result = stem_words(result, stemmer)
+
+#     return result
 
 def main_pipeline(sentence, language="english"):
     """ The main pipeline every sentence should follow """
-    stop_words = stopwords.words(language)
-    stemmer = PorterStemmer()
+    # stop_words = stopwords.words(language)
+    # stemmer = PorterStemmer()
 
     result = remove_urls(sentence)
-    result = remove_twitter_tags(result)
-    result = remove_retweet_token(result)
-    result = remove_tickers(result)
-    result = remove_most_punctuation(result)
-    result = remove_numbers(result)
-    result = remove_multiple_whitespace(result)
+    # result = remove_twitter_tags(result)
+    # result = remove_retweet_token(result)
+    # result = remove_tickers(result)
+    result = remove_all_punctuation(result)
+    # result = remove_numbers(result)
+    # result = remove_multiple_whitespace(result)
     result = strip_whitespaces(result)
     result = convert_to_lowercase(result)
     # result = remove_stopwords(result, stop_words)

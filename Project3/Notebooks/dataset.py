@@ -92,6 +92,19 @@ def split_dataset(root_dir, filename, split_dir_name, train_size=0.8):
     return train_filename, val_filename, test_filename
 
 
+def dataset_length(split_dir_name, filename):
+    """
+    :param str split_dir_name:  The name of the root directory containing the dataset.
+    :param str filename:        The name of the dataset file inside the root directory.
+
+    :return:  The number of training examples contained in the dataset.
+    :rtype:   int
+    """
+    dataset = os.path.join(split_dir_name, filename)
+    df = pd.read_csv(dataset)
+    return df.shape[0]
+
+
 def parse_datasets(root_dir, filenames, device, batch_size=32, glove='glove.twitter.27B.25d',
                    max_vocab_size=20_000):
     """
@@ -127,15 +140,31 @@ def parse_datasets(root_dir, filenames, device, batch_size=32, glove='glove.twit
                                      test=test_filename, format='csv', fields=fields)
     train_dataset, val_dataset, test_dataset = datasets
 
-    # build the vocabulary, while initializing unknown words to random vectors form normal dist
+    # build the vocabulary, while initializing unknown words to random vectors from normal dict
     TEXT.build_vocab(train_dataset, max_size=max_vocab_size, vectors=glove,
                      unk_init=torch.Tensor.normal_)
 
     # construct the iterators
+    test_examples = dataset_length(root_dir, test_filename)
+
+    train_it = BucketIterator(train_dataset, batch_size=batch_size,
+                              sort_key=lambda data: len(data.text), device=device, repeat=False,
+                              sort_within_batch=False)
+    val_it = BucketIterator(val_dataset, batch_size=batch_size,
+                            sort_key=lambda data: len(data.text), device=device, repeat=False,
+                            sort_within_batch=False)
+    test_it = BucketIterator(test_dataset, batch_size=test_examples,
+                             sort_key=lambda data: len(data.text), device=device, repeat=False,
+                             sort_within_batch=False)
+    
+    """
     sort_key = lambda data: len(data.text)
     train_it, val_it, test_it = BucketIterator.splits((train_dataset, val_dataset, test_dataset),
-                                                      batch_size=batch_size, sort_within_batch=True,
-                                                      sort_key = sort_key, device=device)
+                                                      batch_size=(batch_size, batch_size,
+                                                                  test_examples),
+                                                      sort_within_batch=False, sort_key=sort_key,
+                                                      repeat=False, device=device)
+    """
 
     # return the created objects
     iterators = (train_it, val_it, test_it)

@@ -6,11 +6,8 @@ import matplotlib.pyplot as plt
 from metrics import *
 
 
-def plot_metrics(checkpoints, train_metric, val_metric, train_metric_name, val_metric_name, yax,
-                 title):
+def plot_metrics(train_metric, val_metric, train_metric_name, val_metric_name, yax, title):
     """
-    :param list checkpoints:       A list contaning in which steps the validation metrics where
-                                      calculated.
     :param list train_metric:      The list containing the training metrics.
     :param list val_metric:        The list containing the validation metrics.
     :param str train_metric_name:  The name of the training metric that is plotted.
@@ -20,53 +17,55 @@ def plot_metrics(checkpoints, train_metric, val_metric, train_metric_name, val_m
 
     :return:  None.
     """
-    plt.figure(figsize=(20, 10))
-    plt.plot(checkpoints, train_metric, color='royalblue', label=train_metric_name)
-    plt.plot(checkpoints, val_metric, color='maroon', linestyle="--", label=val_metric_name, marker='o')
+    plt.figure(figsize=(25, 13))
+    plt.plot(train_metric, color='royalblue', label=train_metric_name)
+    plt.plot(val_metric, color='maroon', linestyle="--", label=val_metric_name, marker='o')
     plt.yticks(np.arange(0.0, 1.01, 0.1))
     plt.legend()
-    plt.xlabel('Steps')
+    plt.xlabel('Epochs')
     plt.ylabel(yax)
     plt.title(title)
     plt.show()
 
 
 
-def plot_roc_curves(models, modelnames, colors, Xs, ys, threshold_step=0.0001):
+def plot_roc_curve(model, test_iterator, threshold_step=0.0001):
     """ plot the ROC curve of the given models on a specific dataset """
     # define the thresholds that will be used to compute the ROC curve
     thresholds = np.arange(threshold_step, 1.0, threshold_step)
 
     # define the list with the values of (sensitivity and 1 - specificity)
-    recalls = {model: [] for model in models}
-    fall_outs = {model: [] for model in models}
+    recalls = []
+    fall_outs = []
+
+    # get the information of the test set
+    X_test, lengths = None, None
+    y_test = None
+
+    for full_testset in test_iterator:
+        X_test, lengths = full_testset.text
+        y_test = full_testset.label
 
     # make the prediction
-    y_pred = {model: model(Xs[model]) for model in models}
+    y_test_pred = model(X_test, lengths)
 
     # compute the metrics for every threshold
     for threshold in thresholds:
 
-        # for each model
-        for model in models:
+        # get the roc metrics
+        recall, fall_out = roc_metrics(y_test_pred, y_test, threshold=threshold)
 
-            # get the roc metrics
-            recall, fall_out = roc_metrics(y_pred[model], ys[model], threshold=threshold)
-
-            # append to the corresponding lists
-            recalls[model].append(recall)
-            fall_outs[model].append(fall_out)
+        # append to the corresponding lists
+        recalls.append(recall)
+        fall_outs.append(fall_out)
 
     # configure the size of the ROC curve plots
     plt.rcParams["figure.figsize"] = [15, 10]
     plt.rcParams["xtick.labelsize"] = 14
     plt.rcParams["ytick.labelsize"] = 14
 
-    # for every model
-    for model in models:
-        # plot its ROC curve
-        color = colors[model] if colors is not None else "royalblue"
-        plt.plot(fall_outs[model], recalls[model], color=color, label=modelnames[model])
+    # plot the ROC curve
+    plt.plot(fall_outs, recalls, color="dodgeblue", label="RNN Classifier")
 
     # plot y = x for comparison
     x = np.arange(0, 1.01, 0.1)
