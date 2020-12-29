@@ -29,8 +29,9 @@ def plot_metrics(train_metric, val_metric, train_metric_name, val_metric_name, y
 
 
 
-def plot_roc_curve(model, test_iterator, threshold_step=0.0001):
-    """ plot the ROC curve of the given models on a specific dataset """
+def plot_roc_curve(y, y_pred, threshold_step=0.001):
+    """ plot the ROC curve that gets generated from the ground truth labels y,
+        and the predictions y_pred of a model """
     # define the thresholds that will be used to compute the ROC curve
     thresholds = np.arange(threshold_step, 1.0, threshold_step)
 
@@ -38,22 +39,11 @@ def plot_roc_curve(model, test_iterator, threshold_step=0.0001):
     recalls = []
     fall_outs = []
 
-    # get the information of the test set
-    X_test, lengths = None, None
-    y_test = None
-
-    for full_testset in test_iterator:
-        X_test, lengths = full_testset.text
-        y_test = full_testset.label
-
-    # make the prediction
-    y_test_pred = model(X_test, lengths)
-
     # compute the metrics for every threshold
     for threshold in thresholds:
 
         # get the roc metrics
-        recall, fall_out = roc_metrics(y_test_pred, y_test, threshold=threshold)
+        recall, fall_out = roc_metrics(y_pred, y, threshold=threshold)
 
         # append to the corresponding lists
         recalls.append(recall)
@@ -65,7 +55,7 @@ def plot_roc_curve(model, test_iterator, threshold_step=0.0001):
     plt.rcParams["ytick.labelsize"] = 14
 
     # plot the ROC curve
-    plt.plot(fall_outs, recalls, color="dodgeblue", label="RNN Classifier")
+    plt.plot(fall_outs, recalls, color="darkcyan", label="RNN Classifier")
 
     # plot y = x for comparison
     x = np.arange(0, 1.01, 0.1)
@@ -73,7 +63,7 @@ def plot_roc_curve(model, test_iterator, threshold_step=0.0001):
 
     # add legend, labels and title
     plt.legend()
-    plt.xlabel(r"1 - Specificity", fontsize=20)
-    plt.ylabel(r"Sensitivity", fontsize=20)
+    plt.xlabel("\n1 - Specificity", fontsize=20)
+    plt.ylabel("Sensitivity\n", fontsize=20)
     plt.title("ROC curve\n", fontsize=25)
     plt.show()

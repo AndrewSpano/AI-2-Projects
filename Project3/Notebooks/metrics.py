@@ -66,34 +66,6 @@ def F1_score(y_pred, y, threshold=0.5):
     return f1
 
 
-def compute_metrics(model, X_train, y_train, X_val, y_val, loss, metrics):
-    """ Function used to compute all the metrics needed for a function """
-
-    # make training and validation predictions
-    y_train_pred = model(X_train)
-    y_val_pred = model(X_val)
-
-    # compute the losses
-    train_loss = loss(y_train_pred, y_train).item()
-    val_loss = loss(y_val_pred, y_val).item()
-
-    # compute the accuracies
-    train_acc = accuracy(y_train_pred, y_train)
-    val_acc = accuracy(y_val_pred, y_val)
-
-    # compute the F1 scores
-    train_f1 = F1_score(y_train_pred, y_train)
-    val_f1 = F1_score(y_val_pred, y_val)
-
-    # append everything to the lists
-    metrics["train_losses"].append(train_loss)
-    metrics["val_losses"].append(val_loss)
-    metrics["train_accuracies"].append(train_acc)
-    metrics["val_accuracies"].append(val_acc)
-    metrics["train_f1"].append(train_f1)
-    metrics["val_f1"].append(val_f1)
-
-
 def log_metrics(epoch, metrics):
     """ Function to print the metrics of the last batch during the training of a model """
     print(f'Epoch: {epoch}')
@@ -106,19 +78,3 @@ def log_metrics(epoch, metrics):
     print('\t\tAverage Training F1-score: {:.2f}, '
           'Average Validation F1-score: {:.2f}\n'.format(metrics['train_f1'][-1],
                                                          metrics['val_f1'][-1]))
-
-
-def metric_improved(metrics, best_metric, metric_type):
-    """ Function that returns True if the current metric is better than the best so far; Else False """
-    if metric_type == "val_f1" or metric_type == "val_accuracies":
-        return metrics[metric_type][-1] >= best_metric
-    else:
-        return metrics[metric_type][-1] <= best_metric
-
-
-def best_metric_init(model, metric):
-    """ Function to initialize the best metrics of a model """
-    if metric == "val_losses":
-        model.best_metric = float("inf")
-    else:
-        model.best_metric = 0.0

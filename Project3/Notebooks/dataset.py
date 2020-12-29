@@ -53,9 +53,9 @@ def split_dataset(root_dir, filename, split_dir_name, train_size=0.8):
     df.drop(indices_of_empty_sentences, inplace=True)
 
     # do the splitting
-    train, test = train_test_split(df, train_size=train_size, random_state=13, shuffle=True,
+    train, test = train_test_split(df, train_size=train_size, random_state=3, shuffle=True,
                                    stratify=df[['target']])
-    val, test = train_test_split(test, train_size=0.5, random_state=13, stratify=test[['target']])
+    val, test = train_test_split(test, train_size=0.5, random_state=3, stratify=test[['target']])
 
 
     # log some information
@@ -145,27 +145,52 @@ def parse_datasets(root_dir, filenames, device, batch_size=32, glove='glove.twit
                      unk_init=torch.Tensor.normal_)
 
     # construct the iterators
-    test_examples = dataset_length(root_dir, test_filename)
-
     train_it = BucketIterator(train_dataset, batch_size=batch_size,
                               sort_key=lambda data: len(data.text), device=device, repeat=False,
-                              sort_within_batch=False)
+                              sort_within_batch=True)
     val_it = BucketIterator(val_dataset, batch_size=batch_size,
                             sort_key=lambda data: len(data.text), device=device, repeat=False,
-                            sort_within_batch=False)
-    test_it = BucketIterator(test_dataset, batch_size=test_examples,
+                            sort_within_batch=True)
+    test_it = BucketIterator(test_dataset, batch_size=batch_size,
                              sort_key=lambda data: len(data.text), device=device, repeat=False,
-                             sort_within_batch=False)
-    
-    """
-    sort_key = lambda data: len(data.text)
-    train_it, val_it, test_it = BucketIterator.splits((train_dataset, val_dataset, test_dataset),
-                                                      batch_size=(batch_size, batch_size,
-                                                                  test_examples),
-                                                      sort_within_batch=False, sort_key=sort_key,
-                                                      repeat=False, device=device)
-    """
+                             sort_within_batch=True)
 
     # return the created objects
     iterators = (train_it, val_it, test_it)
     return TEXT, LABEL, datasets, iterators
+
+
+def get_truths_and_predictions(model, iterator):
+    """
+    :param torch.nn.Module model:               The model used to make the predictions.
+    :param torch.data.BucketIterator iterator:  The iterator used to extract all the data we need.
+    
+    :return:  Torch Tensor containing the ground truth labels and the model predictions for the
+              whole dataset stored in the iterator.
+    :rtype:   (Tensor, Tensor)
+    """
+    # lists that will contain the results for every batch
+    y_true_batches = []
+    y_pred_batches = []
+
+    # don't compute gradients
+    with torch.no_grad():
+        # switch to evaluation mode for faster inference
+        model.eval()
+
+        # for every training batch in the iterator
+        for batch in iterator:
+
+            X, lengths = batch.text
+            y = batch.label.reshape(-1, 1)
+            y_pred = model(X, lengths)
+
+            y_true_batches.append(y)
+            y_pred_batches.append(y_pred)
+
+    # concatenate the data from all the batches and return
+    y_true_concatenated = torch.cat(y_true_batches, dim=0)
+    y_pred_concatenated = torch.cat(y_pred_batches, dim=0)
+
+    return y_true_concatenated, y_pred_concatenated
+

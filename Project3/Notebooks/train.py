@@ -4,8 +4,8 @@ from metrics import *
 
 
 
-def train(model, train_iterator, val_iterator, epochs, optimizer, criterion, scheduler, clip=5.0,
-          unfreeze_on_epoch=5, verbose=False):
+def train(model, train_iterator, val_iterator, epochs, optimizer, criterion, scheduler=None,
+          clip=5.0, unfreeze_on_epoch=5, verbose=False):
   """
   :param torch.nn.Module model:                         PyTorch model to train.
   :param torchtext.data.BucketIterator train_iterator:  Train Iterator for the Training Dataset.
@@ -37,8 +37,8 @@ def train(model, train_iterator, val_iterator, epochs, optimizer, criterion, sch
   # start training
   for epoch in range(epochs):
 
-    if epoch == unfreeze_on_epoch:
-      model.unfreeze_embedding()
+    # if epoch == unfreeze_on_epoch:
+    #   model.unfreeze_embedding()
 
     # start train mode
     model.train()
@@ -104,7 +104,8 @@ def train(model, train_iterator, val_iterator, epochs, optimizer, criterion, sch
     mean_val_f1 = sum_of_val_f1 / len(val_iterator)
 
     # perform a step with the scheduler
-    scheduler.step(mean_val_loss)
+    if scheduler is not None:
+      scheduler.step(mean_val_loss)
 
     # update the lists with the metrics
     metrics['train_losses'].append(mean_train_loss)
