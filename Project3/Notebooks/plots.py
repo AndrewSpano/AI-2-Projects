@@ -21,10 +21,11 @@ def plot_metrics(train_metric, val_metric, train_metric_name, val_metric_name, y
     plt.plot(train_metric, color='royalblue', label=train_metric_name)
     plt.plot(val_metric, color='maroon', linestyle="--", label=val_metric_name, marker='o')
     plt.yticks(np.arange(0.0, 1.01, 0.1))
-    plt.legend()
     plt.xlabel('Epochs')
     plt.ylabel(yax)
     plt.title(title)
+    plt.legend()
+    plt.grid()
     plt.show()
 
 
@@ -62,8 +63,9 @@ def plot_roc_curve(y, y_pred, threshold_step=0.001):
     plt.plot(x, x, color="brown", linestyle="--", label=r"$y\;=\;x$")
 
     # add legend, labels and title
-    plt.legend()
     plt.xlabel("\n1 - Specificity", fontsize=20)
     plt.ylabel("Sensitivity\n", fontsize=20)
     plt.title("ROC curve\n", fontsize=25)
+    plt.legend()
+    plt.grid()
     plt.show()
