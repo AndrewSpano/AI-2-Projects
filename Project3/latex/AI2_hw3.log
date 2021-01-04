@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.12.7)  30 DEC 2020 00:24
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.12.7)  4 JAN 2021 12:37
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1133,30 +1133,63 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.56 \end{document}
-                    [1]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 56.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 56.
+l.79 \clearpage
+                [1] [2
+
+]
+<./images/roc1.png, id=29, 928.46875pt x 678.535pt>
+File: ./images/roc1.png Graphic file (type png)
+<use ./images/roc1.png>
+Package pdftex.def Info: ./images/roc1.png  used on input line 124.
+(pdftex.def)             Requested size: 417.80708pt x 305.33792pt.
+ [3
+
+ <./images/roc1.png>]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 146.
+ (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 146.
+ [4
+
+] [5] [6
+
+] [7
+
+]
+<./images/roc2.png, id=64, 928.46875pt x 678.535pt>
+File: ./images/roc2.png Graphic file (type png)
+<use ./images/roc2.png>
+Package pdftex.def Info: ./images/roc2.png  used on input line 258.
+(pdftex.def)             Requested size: 417.80708pt x 305.33792pt.
+ [8
+
+ <./images/roc2.png>] [9
+
+]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 284.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 284.
  (/home/andreas/Desktop/AI/AI2/AI_2_Projects/Project3/latex/AI2_hw3.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 56.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 56.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 284.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 284.
 Package rerunfilecheck Info: File `AI2_hw3.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 56.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 284.
  ) 
 Here is how much of TeX's memory you used:
- 20307 strings out of 492982
- 359895 string characters out of 6134896
- 423094 words of memory out of 5000000
- 23513 multiletter control sequences out of 15000+600000
- 12294 words of font info for 44 fonts, out of 8000000 for 9000
+ 20429 strings out of 492982
+ 361523 string characters out of 6134896
+ 426103 words of memory out of 5000000
+ 23583 multiletter control sequences out of 15000+600000
+ 23932 words of font info for 84 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,7n,54p,991b,411s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb>
-Output written on /home/andreas/Desktop/AI/AI2/AI_2_Projects/Project3/latex/AI2_hw3.pdf (2 pages, 34990 bytes).
+ 55i,16n,54p,991b,494s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/mnsymbol/MnSymbolA.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/mnsymbol/MnSymbol12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1200.pfb>
+Output written on /home/andreas/Desktop/AI/AI2/AI_2_Projects/Project3/latex/AI2_hw3.pdf (10 pages, 184359 bytes).
 PDF statistics:
- 32 PDF objects out of 1000 (max. 8388607)
- 24 compressed objects within 1 object stream
- 3 named destinations out of 1000 (max. 500000)
- 13 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 114 PDF objects out of 1000 (max. 8388607)
+ 88 compressed objects within 1 object stream
+ 23 named destinations out of 1000 (max. 500000)
+ 23 words of extra memory for PDF output out of 10000 (max. 10000000)
 

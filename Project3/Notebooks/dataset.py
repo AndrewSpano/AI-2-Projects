@@ -106,7 +106,7 @@ def dataset_length(split_dir_name, filename):
 
 
 def parse_datasets(root_dir, filenames, device, batch_size=32, glove='glove.twitter.27B.25d',
-                   max_vocab_size=20_000):
+                   max_vocab_size=20_000, fix_length=None):
     """
     :param str root_dir:         The path to the root directory containing the split datasets.
     :param tuple filenames:      A triple (3-tuples) containing the filenames to the train-val-test
@@ -118,6 +118,7 @@ def parse_datasets(root_dir, filenames, device, batch_size=32, glove='glove.twit
                                     e.g. glove.twitter.27B.25d
     :param int max_vocab_size:   The max size that the vocabulary of words which will be created
                                     from the training set, can have.
+    :param int fix_length:       The max length that all sentences be padded to.
 
     :return:  The Field objectes created, along with the datasets loaded and the respective
                 BucketIterators.
@@ -131,7 +132,8 @@ def parse_datasets(root_dir, filenames, device, batch_size=32, glove='glove.twit
 
     # create the corresponding Field objects for the datasets
     tokenizer = lambda sentence: sentence.split()
-    TEXT = Field(sequential=True, use_vocab=True, tokenize=tokenizer, include_lengths=True)
+    TEXT = Field(sequential=True, use_vocab=True, tokenize=tokenizer, include_lengths=True,
+                 fix_length=fix_length)
     LABEL = Field(sequential=False, use_vocab=False, dtype=torch.float)
     fields = {'text': ('text', TEXT), 'target': ('label', LABEL)}
 
@@ -164,7 +166,7 @@ def get_truths_and_predictions(model, iterator):
     """
     :param torch.nn.Module model:               The model used to make the predictions.
     :param torch.data.BucketIterator iterator:  The iterator used to extract all the data we need.
-    
+
     :return:  Torch Tensor containing the ground truth labels and the model predictions for the
               whole dataset stored in the iterator.
     :rtype:   (Tensor, Tensor)
@@ -193,4 +195,3 @@ def get_truths_and_predictions(model, iterator):
     y_pred_concatenated = torch.cat(y_pred_batches, dim=0)
 
     return y_true_concatenated, y_pred_concatenated
-

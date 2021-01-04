@@ -1,8 +1,8 @@
 # Fdb version 3
-["pdflatex"] 1606141674 "/home/andreas/Desktop/AI/AI2/AI_2_Projects/Project2/src/latex/AI2_hw2.tex" "/home/andreas/Desktop/AI/AI2/AI_2_Projects/Project2/src/latex/AI2_hw2.pdf" "AI2_hw2" 1606141675
+["pdflatex"] 1609754989 "/home/andreas/Desktop/AI/AI2/AI_2_Projects/Project2/src/latex/AI2_hw2.tex" "/home/andreas/Desktop/AI/AI2/AI_2_Projects/Project2/src/latex/AI2_hw2.pdf" "AI2_hw2" 1609754991
   "/etc/texmf/web2c/texmf.cnf" 1575715277 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/andreas/Desktop/AI/AI2/AI_2_Projects/Project2/src/latex/AI2_hw2.aux" 1606141675 684 5e35fe93d3f1c383b570da46c6606ab3 ""
-  "/home/andreas/Desktop/AI/AI2/AI_2_Projects/Project2/src/latex/AI2_hw2.tex" 1606141673 26694 4316f8aee32b117cbc44ac9d12348926 ""
+  "/home/andreas/Desktop/AI/AI2/AI_2_Projects/Project2/src/latex/AI2_hw2.aux" 1609754990 684 5e35fe93d3f1c383b570da46c6606ab3 ""
+  "/home/andreas/Desktop/AI/AI2/AI_2_Projects/Project2/src/latex/AI2_hw2.tex" 1609754989 26694 f943851160b584f5cb1c90c51dda30fe ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/mnsymbol/MnSymbolA.enc" 1480098668 3341 78e600b269762aa2a25a5293cc4535c0 ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/mnsymbol/MnSymbolC.enc" 1480098668 3275 8d7166dfdbc31ffdc8aba0c31b3bd5c8 ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/mnsymbol/MnSymbolD.enc" 1480098668 3375 808c88761dbdc66fc653d18f42765b64 ""
@@ -199,14 +199,14 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1520210507 32485 c64754543d8ac501bea6e75e209ea521 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1575715423 2700761 ac0584cc9514ab21918550a6948c4ee2 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1575715461 4128202 196cd599d1d9d41a0d2a16456fe07099 ""
-  "AI2_hw2.aux" 1606141675 684 5e35fe93d3f1c383b570da46c6606ab3 ""
-  "AI2_hw2.out" 1606141675 0 d41d8cd98f00b204e9800998ecf8427e ""
-  "AI2_hw2.tex" 1606141673 26694 4316f8aee32b117cbc44ac9d12348926 ""
+  "AI2_hw2.aux" 1609754990 684 5e35fe93d3f1c383b570da46c6606ab3 ""
+  "AI2_hw2.out" 1609754990 0 d41d8cd98f00b204e9800998ecf8427e ""
+  "AI2_hw2.tex" 1609754989 26694 f943851160b584f5cb1c90c51dda30fe ""
   "images/roc.png" 1605640957 73952 363efe11e16ac3ecbb40a093d3173014 ""
   (generated)
-  "/home/andreas/Desktop/AI/AI2/AI_2_Projects/Project2/src/latex/AI2_hw2.pdf"
   "AI2_hw2.pdf"
-  "AI2_hw2.aux"
-  "AI2_hw2.log"
   "/home/andreas/Desktop/AI/AI2/AI_2_Projects/Project2/src/latex/AI2_hw2.log"
+  "AI2_hw2.log"
   "AI2_hw2.out"
+  "AI2_hw2.aux"
+  "/home/andreas/Desktop/AI/AI2/AI_2_Projects/Project2/src/latex/AI2_hw2.pdf"

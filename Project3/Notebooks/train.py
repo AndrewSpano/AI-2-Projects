@@ -37,8 +37,8 @@ def train(model, train_iterator, val_iterator, epochs, optimizer, criterion, sch
   # start training
   for epoch in range(epochs):
 
-    # if epoch == unfreeze_on_epoch:
-    #   model.unfreeze_embedding()
+    if epoch == unfreeze_on_epoch:
+      model.unfreeze_embedding()
 
     # start train mode
     model.train()
