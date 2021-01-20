@@ -1,0 +1,318 @@
+\documentclass[12pt]{report}
+
+% packages used for many things
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, filecolor=magenta, urlcolor=cyan}
+\urlstyle{same}
+% package used for the enumeration
+\usepackage{enumitem}
+% packages used to write more symbols and text in math mode
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{amsfonts} 
+\usepackage{amssymb}
+\usepackage{MnSymbol}
+\usepackage{csquotes}
+\usepackage{arydshln}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{diagbox}
+\usepackage{extarrows}
+\usepackage{tikz}
+\usepackage{pifont}
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\xmark}{\ding{55}}
+
+
+% \usepackage{geometry}
+%  \geometry{
+%  a4paper,
+%  total={170mm,257mm},
+%  left=20mm,
+%  top=15mm,
+%  }
+
+
+% for images
+\usepackage{graphicx}
+\graphicspath{{./images/}}
+
+% qed black square
+\newcommand*{\QEDA}{\hfill\ensuremath{\blacksquare}}
+% xor symbol
+\newcommand*\xor{\oplus}
+
+\title{Artificial Intelligence II \\ Assignment 4 Report}
+\author{Andreas - Theologos Spanopoulos (sdi1700146@di.uoa.gr)}
+\date{January 17, 2021}
+
+
+% ----------------    START OF DOCUMENT    ------------ %
+\begin{document}
+\maketitle
+
+% ------------------------         EXERCISES 1 & 2          ------------------------ %
+\section*{Exercises 1 \& 2}
+For these exercises, publically available pre-trained models from the python library
+\href{https://www.sbert.net/index.html}{Sentence Transformer} were used. A list with
+all the available models and their respective statistics, can be found
+\href{https://docs.google.com/spreadsheets/d/14QplCdTCDwEmTqrn1LH4yrbKvdogK4oQvYO1K1aPR5M/edit#gid=0}
+{here}.
+
+\subsection*{Preprocessing}
+From the dataset, the following fields are parsed and stored in the class \textquote{CovidArticle}:
+\begin{itemize}
+    \item ID
+    \item Title
+    \item Abstract Text, tokenized into sentences
+    \item Body Text (section names and paragraphs), tokenized into sentences
+\end{itemize}
+For every piece of text, the following preprocessing pipeline is followed:
+\begin{enumerate}
+    \item Remove URLs
+    \item Remove references to bibliography
+    \item Remove multiple full stops (e.g. ...)
+    \item Remove the \textquote{et al.} string
+    \item Remove figure references
+\end{enumerate}
+Numbers 1, 2 and 5 were removed because they offer no use in retrieving a sentence containing them.
+Numbers 3 and 4 were removed because they break sentence tokenization.
+\bigskip
+
+\noindent Every piece of text is broken down into sentences. A list containing all the sentences can be
+accessed in the CovidArticle.text getter method. This format is convinient because it allows the
+sentenced to be fed directly to the sentence transformers. \clearpage
+
+
+\subsection*{Sentence Embedding Approaches}
+The 2 models that were finally chosen, are:
+\begin{enumerate}
+    \item \href{https://arxiv.org/pdf/1910.01108.pdf}{stsb-distilbert-base}.
+        This model was chosen because of its good performance, and its high speed in computing the
+        embeddings of sentences (4000 senteces/sec on V100 GPU).
+    \item \href{https://arxiv.org/pdf/1907.11692.pdf}{stsb-roberta-base}. This model was chosen as
+        its the second best model regarsing the STSb performance, and its speed is acceptable
+        (2300 sentences/sec on V100 GPU).
+\end{enumerate}
+Both models are \href{https://arxiv.org/pdf/1908.10084.pdf}{Sentence-BERT models}, which basically
+means that they use \href{https://arxiv.org/pdf/1810.04805.pdf}{BERT-like} pre-trained models to
+compute the sentence embeddings.
+\bigskip
+
+Now let's discuss about how the models are used to retrieve relevant text for every query.
+The pipeline used is as follows:
+\begin{enumerate}
+    \item Filter our articles that are irrelevant to the subject query.
+    \item From the articles kept, find the best one and return it.
+\end{enumerate} \smallskip
+
+\noindent\underline{Step 1} \bigskip
+
+\noindent For every article, a \textquote{summary} is computed. This summary is the
+simplest possible: it's a list consisting of sentences which are:
+\begin{enumerate}
+    \item The title of the article
+    \item The tokenized sentences of the abstract of the article
+    \item The sections of the article, each being treated as a standalone sentence.
+\end{enumerate}
+Then for every model, we compute the sentence embeddings for each sentence in the summary.
+These embeddings are used for filtering our irrelevant articles: Articles where the highest
+cosine similarity with any sentence of the summary is lower than a specified threshold,
+are discarded. This helps us keep only relevant articles and therefore compute less sentence
+embeddings, as it is quite a costly operation, especially on low-end hardware.
+\clearpage
+
+\noindent\underline{Step 2} \bigskip
+
+\noindent For the articles that have \textquote{survived}, compute the sentence embeddings
+for the whole text, and pick the one that has the highest cosine similarity with the query,
+on any sentence. Then, consider that sentence the passage. After that, start compuring the
+cosine similarity of adjacent sentences with the initial passage, and if they are above a
+0.5 threshold, append them to the passage. This process repeats until either the threshold
+of 0.5 is not met on both sides, or we run out of the section in which the inital passage
+belonged. \smallskip
+
+\subsection*{Comparison}
+Some test queries have been hand-written for evaluation purposes. Those queries and the
+corresponding articles in which their answers lie, are listed in the queries.txt file.
+\bigskip
+
+\noindent In the task of finding the correct article containing the answer to a given query,
+the models performed: \bigskip
+\[
+    \begin{tabular}{|c|c|c|}
+        \cline{1-3}
+        \backslashbox{Query}{Model} & stsb-distilbert-base & stsb-roberta-base \\
+        \cline{1-3}
+        Query 1 & \textcolor{green}{\cmark} & \textcolor{green}{\cmark} \\[0.6ex]
+        \cline{1-3}
+        Query 2 & \textcolor{green}{\cmark} & \textcolor{green}{\cmark} \\[0.6ex]
+        \cline{1-3}
+        Query 3 & \textcolor{green}{\cmark} & \textcolor{green}{\cmark} \\[0.6ex]
+        \cline{1-3}
+        Query 4 & \textcolor{green}{\cmark} & \textcolor{green}{\cmark} \\[0.6ex]
+        \cline{1-3}
+        Query 5 & \textcolor{green}{\cmark} & \textcolor{green}{\cmark} \\[0.6ex]
+        \cline{1-3}
+        Query 6 & \textcolor{green}{\cmark} & \textcolor{green}{\cmark} \\[0.6ex]
+        \cline{1-3}
+        Query 7 & \textcolor{red}{\xmark} & \textcolor{green}{\cmark} \\[0.6ex]
+        \cline{1-3}
+        Query 8 & \textcolor{green}{\cmark} & \textcolor{red}{\xmark} \\[0.6ex]
+        \cline{1-3}
+        Query 9 & \textcolor{red}{\xmark} & \textcolor{red}{\xmark} \\[0.6ex]
+        \cline{1-3}
+        Query 10 & \textcolor{green}{\cmark} & \textcolor{green}{\cmark} \\[0.6ex]
+        \cline{1-3}
+        Total Accuracy \% & 80\% & 80\% \\[0.6ex]
+        \cline{1-3}
+    \end{tabular}
+\] \clearpage
+
+\noindent Let's also take a look at the results in the task of returning also the correct
+passage along with the correct article: \bigskip
+\[
+    \begin{tabular}{|c|c|c|}
+        \cline{1-3}
+        \backslashbox{Query}{Model} & stsb-distilbert-base & stsb-roberta-base \\
+        \cline{1-3}
+        Query 1 & \textcolor{green}{\cmark} & \textcolor{green}{\cmark} \\[0.6ex]
+        \cline{1-3}
+        Query 2 & \textcolor{green}{\cmark} & \textcolor{green}{\cmark} \\[0.6ex]
+        \cline{1-3}
+        Query 3 & \textcolor{green}{\cmark} & \textcolor{green}{\cmark} \\[0.6ex]
+        \cline{1-3}
+        Query 4 & \textcolor{green}{\cmark} & \textcolor{green}{\cmark} \\[0.6ex]
+        \cline{1-3}
+        Query 5 & \textcolor{green}{\cmark} & \textcolor{green}{\cmark} \\[0.6ex]
+        \cline{1-3}
+        Query 6 & \textcolor{green}{\cmark} & \textcolor{green}{\cmark} \\[0.6ex]
+        \cline{1-3}
+        Query 7 & \textcolor{red}{\xmark} & \textcolor{green}{\cmark} \\[0.6ex]
+        \cline{1-3}
+        Query 8 & \textcolor{green}{\cmark} & \textcolor{red}{\xmark} \\[0.6ex]
+        \cline{1-3}
+        Query 9 & \textcolor{red}{\xmark} & \textcolor{red}{\xmark} \\[0.6ex]
+        \cline{1-3}
+        Query 10 & \textcolor{green}{\cmark} & \textcolor{green}{\cmark} \\[0.6ex]
+        \cline{1-3}
+        Total Accuracy \% & 80\% & 80\% \\[0.6ex]
+        \cline{1-3}
+    \end{tabular}
+\] \bigskip
+
+\noindent The time required to compute the embeddings of all the summaries is
+\begin{itemize}
+    \item 15 minutes for stsb-distilbert-base
+    \item 27 minutes for stsb-roberta-base
+\end{itemize} \bigskip
+
+\noindent The average time required to return the result of a query for every model is
+\begin{itemize}
+    \item 17.75s for stsb-distilbert-base
+    \item 24.91s for stsb-roberta-base
+\end{itemize}
+Note that these times get faster as more queries come in, because article text embeddings
+get saved in a dictionary. \clearpage
+
+
+\subsection*{Error Analysis}
+For an uncorrect article/passage to be returned, there are 2 possible errors that might
+have occurred:
+\begin{itemize}
+    \item In Step 1, the correct article got filtered out.
+    \item In Step 2, the correct article was kept but did not contain the sentence
+        with the maximum cosine similarity.
+\end{itemize}
+Let's take a look in which case each of our query failures belong to. \bigskip
+
+\noindent By un-commenting the 2 print statements in the \textquote{find\_best\_article()}
+function, we can see which articles were found relevant. The others were filtered out.
+Let's make a table for every model to see what is going on:
+
+$$\text{stsb-distilbert-base}$$
+\[
+    \begin{tabular}{|c|c|c|}
+        \cline{1-3}
+        \backslashbox{Query Failures}{Failure Reason} & Step 1 Error & Step 2 Error \\
+        \cline{1-3}
+        Query 7 &  & \textcolor{green}{\cmark} \\[0.6ex]
+        \cline{1-3}
+        Query 9 & \textcolor{green}{\cmark} &  \\[0.6ex]
+        \cline{1-3}
+        Total & 1/2 & 1/2 \\[0.6ex]
+        \cline{1-3}
+    \end{tabular}
+\]
+
+$$\text{stsb-roberta-base}$$
+\[
+    \begin{tabular}{|c|c|c|}
+        \cline{1-3}
+        \backslashbox{Query Failures}{Failure Reason} & Step 1 Error & Step 2 Error \\
+        \cline{1-3}
+        Query 8 & \textcolor{green}{\cmark} &  \\[0.6ex]
+        \cline{1-3}
+        Query 9 & \textcolor{green}{\cmark} &  \\[0.6ex]
+        \cline{1-3}
+        Total & 2/2 & 0/2 \\[0.6ex]
+        \cline{1-3}
+    \end{tabular}
+\] \bigskip
+
+\noindent From this small sample, we can deduce that the \textquote{summary}
+tecnhique does not work perfectly. This is expected, as the title + the
+abstract + the section titles do not capture the entirety of an article. For example,
+we may have an article about coronaviruses, but in the introduction there is a reference
+to the Spanish Flu, and the amount of casualties it caused. Since this information is
+irrelevant to the article itself and the pieces that make up the summary, it will be
+filtered out. Of course, there are way better methods to create summaries, like
+\href{https://huggingface.co/transformers/task_summary.html#summarization}{summarizers},
+etc. These haven't been tried, as I am running low on time. One solution could be to
+decrease the similarity threshold, so that more articles get included. This will slow down
+significantly the running time, so it is not an option. Therefore, improving
+the summary of each article should be the way to go for improving this text retrieval
+mechanism. \bigskip
+
+\noindent One other thing that could be done is to get rid of the summaries, and just
+pre-compute once the sentence embeddings for every article. On the Colab GPU, this
+procedure takes about 2 hours for a model like \textit{stsb-roberta-base}. Since
+cosine similarity is not a very expensive operation, this would lead to the best results,
+as all the articles would be taken into account, but slower (on average) as it would
+compute $O(n)$ cosine similarities for every query, where $n$ is the number of article.
+\bigskip
+
+\noindent The above idea would technically give the most accurate results. Will it?
+There is a small catch. The problem lies on the selection of the \textquote{best}
+sentence. The sentence with the highest cosine similarity with the query is not always
+the answer to it. This problem becomes apparent when the embeddings have not been
+trained on specific domain-knowledge data, for example, text containing biological terms.
+The same problem would occur in the above models, had more queries been created.
+Thus, apart from the issue of identifying quickly the relevant articles, one needs
+to make sure that the remaining articles can be fully understood, that is, the
+sentence embeddings will capture all of its semantic meaning. This can be achieved
+by fine-tuning the models on the specific domain-knowledge data.
+
+\subsection*{Conclusion}
+Taking into account the above results, model \textquote{stsb-roberta-base} can be considered
+as the best out of the two models, since
+\begin{enumerate}
+    \item It filters out the most sentences (error analysis showed that it keeps
+        around 5-25 sentences per article).
+    \item Even though slower, it finds the \textit{exact} answer for most queries,
+        unlike \textquote{stsb-distilbert-base} which sometimes finds
+        \textit{approximate} answers.
+    \item Once most sentence embeddings will have been computed, 
+        it will become faster than \textquote{stsb-distilbert-base}, since it
+        will only have to find the cosine similarities with many less articles.
+\end{enumerate} \clearpage
+
+
+% ------------------------        EXERCISE 3          ------------------------ %
+\section*{Exercise 3}
+
+
+\end{document}
+% ----------------    END OF DOCUMENT    ------------ %

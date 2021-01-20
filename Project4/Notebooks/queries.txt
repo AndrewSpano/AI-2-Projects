@@ -1,0 +1,109 @@
+1) 0043d044273b8eb1585d3a66061e9b4e03edc062
+
+Question: How is the diagnosis of pulmonary tuberculosis made in TB clinics and hospitals?
+
+Passage: Diagnosis of pulmonary TB in hospitals and TB clinics is made on the basis of clinical
+          examination; chest radiography and sputum smear microscopy and/or sputum culture.
+          Following diagnosis, patients enter the DOTS program which prescribes short-course
+          chemotherapy (SCC) comprising 2 months of isoniazid (H), rifampicin (R), pyrazinamide (Z)
+          plus streptomycin (S) or ethambutol (E) followed by 4 months of H and R. (line 248)
+
+
+
+2) 105268027d44ab275991e358674462f77223e882
+
+Question: When was the Porcine epidemic diarrhea virus first detected?
+          Was the Porcine epidemic diarrhea virus first detected in Slovenia?
+
+Passage: Porcine epidemic diarrhea virus (PEDV) was detected for the first time in Slovenia in
+          January 2015. (line 66)
+
+
+
+3) 1edab5890fbff22ad353739d3d1e80a86d482820
+
+Question: Is handwashing the most important measure against infectious diseases?
+
+Passage: Handwashing is the most fundamental way to prevent the spread of infectious diseases.
+          (line 48)
+        OR
+         Handwashing is recommended as the single most ef-fective method to prevent the spread of
+          infectious diseases. (line 93)
+
+
+
+4) 3339f4bb346bfa3070ae5fc7dc745ef051535b0e
+
+Question: How was the importance of clathrin-mediated endocytosis for MHV confirmed?
+
+Passage: The importance of clathrin-mediated endocytosis and endosome maturation for MHV fusion was
+            confirmed by analysis of endocytosis-affecting agents using the fusion assay. After
+            preloading with FDG, cells were pre-treated with the inhibitors for 30 min at 37uC,
+            after which cells were inoculated with MHV-aN in the presence of the agents, and
+            analyzed by FACS as described above. (line 884)
+          OR
+         Endocytosis-affecting agents indicate clathrin-mediated endocytosis and endosome maturation
+          to be important in MHV infection. (line 768)
+
+
+
+5) 63a0d9767212d4316c91660dc4eedc8cb3fe527f OR c98f64c50d8a1c2d378db2e8da009c2dbc7936b1
+
+Question: Which alternatives do we have for conventional chemotherapy?
+
+Passage: Highly effective and attenuated dose schedules are good regimens for drug research and
+          development. Combination chemotherapy is a good strategy in cancer therapy. (line 115)
+         OR
+         Different chemotherapy strategies were carried out in different endemic areas: mass
+          chemotherapy was used for the people from endemic areas with a high prevalence and with a
+          history of water contact. (line 201)
+
+
+
+
+6) 5a63d131a9fdbdb837c56458c72d6e29942c1fb9 OR e447d139f1d046120a293f1219944e82c77bc829
+
+Question: Is there a drug to treat the EV71 infection?
+
+Passage: Milrinone therapy may provide a useful therapeutic approach for treating life-threatening
+         EV71 infections. (line 629)
+          OR
+         There is no effective drug to treat EV71 infection yet. (line 230)
+
+
+
+7) b7a6a987030c52cc7ecdf49c3933b6cfda488210
+
+Question: Which is common cause for diarrhea and septicemia in calves?
+
+Passage: Escherichia coli is one of the most common causes of diarrhea and septicemia in calves,
+          affecting dairy, and beef production. (line 91)
+
+
+
+8) bf7d69e6d9d85c3870025ee9e51632ca44283441
+
+Question: Which scanning technique was used to confirm hypotheses regarding the MAb-1G10 epitope
+            structure?
+
+Passage: Confirmation of critical MAb-1G10 residues by alanine scanning. An alanine scanning
+          technique was used to determine if either of these hypotheses regarding the MAb-1G10
+          epitope structure might be correct. (line 478)
+
+
+
+9) d29ac40afbb28f3dff1d4923aae6c01299399334
+
+Question: How can host translational inhibition be achieved?
+
+Passage: Host translational inhibition can be indirectly achieved by dampening transcription and
+          RNA processing (as discussed above). (line 345)
+
+
+
+10) d44571bd848bc813e4cdd2fe8c36b922433ec4da
+
+Question: What is Multiple sclerosis?
+
+Passage: Multiple sclerosis (MS) is a relatively prominent autoimmune disease identified as the
+          number one cause of non-traumatic adult onset neurological disability (1) . (line 72)
