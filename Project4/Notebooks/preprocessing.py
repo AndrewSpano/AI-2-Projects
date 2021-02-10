@@ -33,7 +33,7 @@ def remove_et_al(corpus):
 
 
 def remove_figure_references(corpus):
-    # remove references to figures, of the form: (graph showd in Fig 1)
+    # remove references to figures, of the form: (graph showed in Fig 1)
     result = re.sub('\([^\)]*?(?=Fig)Fig.*?(?=\))\)', '', corpus)
     return result
 

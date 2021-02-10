@@ -13,6 +13,7 @@
 \usepackage{mathtools}
 \usepackage{amsfonts} 
 \usepackage{amssymb}
+\usepackage{wasysym}
 \usepackage{MnSymbol}
 \usepackage{csquotes}
 \usepackage{arydshln}
@@ -281,7 +282,7 @@ pre-compute once the sentence embeddings for every article. On the Colab GPU, th
 procedure takes about 2 hours for a model like \textit{stsb-roberta-base}. Since
 cosine similarity is not a very expensive operation, this would lead to the best results,
 as all the articles would be taken into account, but slower (on average) as it would
-compute $O(n)$ cosine similarities for every query, where $n$ is the number of article.
+compute $O(n)$ cosine similarities for every query, where $n$ is the number of articles.
 \bigskip
 
 \noindent The above idea would technically give the most accurate results. Will it?
@@ -312,7 +313,168 @@ as the best out of the two models, since
 
 % ------------------------        EXERCISE 3          ------------------------ %
 \section*{Exercise 3}
+Even though there is an already build model for Question Answering from the
+Hugging Face library
+\href{https://huggingface.co/transformers/model_doc/bert.html#bertforquestionanswering}{here},
+I re-implemented it myself using the
+\href{https://huggingface.co/transformers/model_doc/bert.html#bertmodel}{vanilla BERT model}.
+Same goes for the preprocessing of the SQuAD, I preprocessed it myself as it does not make
+sense to copy everything \smiley{}.
 
+\subsection*{Preprocessing}
+All the operations regarding the preprocessing of the SQuAD can be found in the
+squad\_preprocessing.py file. The procedure can be described in the following steps:
+\begin{enumerate}
+    \item Read the json file containig the SQuAD data. Parse it into a dataframe.
+    \item Preprocess the dataframe such each example gets translated to it's
+        corresponding BERT input. This is achieved my tokenizing the question
+        and the context, while also adding the [CLS] and [SEP] tokens. For some conrner
+        case we have, we have the following rules:
+        \begin{itemize}
+            \item Answers that contain only part of a token, are changed in order to contain
+                the whole token.
+            \item BERT inputs that are longer than the maximum specified bert input length
+                (hyperprameter set in the beggining), are shortened by removing the text that
+                is the \textquote{most} far away from the answers. Note that this idea is
+                stupid, as information about the target is \textquote{introduced} in the input.
+                It was a simple solution to implement. A better idea would be to have a rolling
+                window in the context, and if the original answer is inside that window, set it
+                as the answer, if it is not, set the answer to \textquote{non-existing}. This
+                could also work as a way to augment the dataset. But since the examples where
+                the input was longer than the allowed were few, I did not get to implementing
+                this solution.
+        \end{itemize}
+    \item Pad the BERT inputs with 0 such that all the inputs have the same length, that of
+        the input with the max length. Also add the Mask IDs and the segment IDs in the
+        dataframe, in order to avoid doing it later.
+    \item Question that have no answer, are assigned to the class 0 ([CLS] token).
+\end{enumerate} \clearpage
+
+\subsection*{Model}
+The model is pretty simple. We run the input through the BERT, and get the embeddings
+of the last $n$ hidden states. In the notebook implementation, $n=4$ was used (which means
+that we stack the hidden states of the layers 9-12 of the BERT output). Then, the
+concatenated output is flattened, and fed into 2 linear layers (one for the start token
+and one for the end token), where their output shape is the length of the BERT input.
+Normally, we should use a softmax function on the output of the above layers to get
+the probabilities of each token being the start token and the end token respectively.
+We do not need to apply a softmax, as the CrossEntropyLoss from PyTorch does it. Some
+hyperprameters of the model are:
+\begin{enumerate}
+    \item Learning Rate = $10^{-6}$, for Adam
+    \item Regularization (weight decay) = $10^{-2}$ for the Loss Function
+    \item Batch Size = 16
+    \item epochs = 2
+    \item Max length of BERT input = 256
+\end{enumerate}
+
+\subsection*{Performance}
+The metrics used to assess the performance of the model are:
+\begin{enumerate}
+    \item Training Loss: 1.81, Validation Loss: 2.08 
+    \item \begin{itemize}
+            \item Training EM: 49.223, $\;\;\;\;$ (HasAns: 29.176, NoHasAns: 89.236)
+            \item Validation EM: 47.460, $\;$     (HasAns: 7.726, NoHasAns: 87.081)
+          \end{itemize}
+    \item \begin{itemize}
+            \item Training F1: 64.965, $\;\;\;\;$ (HasAns: 52.805, NoHasAns: 89.236)
+            \item Validation F1: 51.850, $\;$     (HasAns: 16.518, NoHasAns: 87.081)
+          \end{itemize}
+\end{enumerate}
+The model performed decently as we can see from the above scores. The graphs
+of the Losses during Training, computed as an average every $\sim$
+500 batches of an epoch, can be found in the Notebook. \clearpage
+
+\subsection*{Reasons for the shortcomings of the model}
+The model is clearly overfitting on the training examples that have no answer.
+If we view this as a classification task (which technically it is), that is,
+we have maxlen (= 256) tokens (classes) for each example, we are trying to
+classify every token as \textquote{start token} or \textquote{end token}. Start
+and End tokens have many range of values (usually from 10 up to 255), while questions
+with no answer (which represent 1/3 of the dataset) have their start and end tokens values
+at 0. Hence, the overfitting. Ways to overcome this issue are:
+\begin{enumerate}
+    \item Adding Dropout between the Flattening of the BERT output and the Fully Connected
+        layer.
+    \item Increasing the weight decay factor (\textquote{amount} of Ridge regularization).
+        Currently it sits at 0.01.
+\end{enumerate}
+Of course, there are more reasons for why the model is not performing better, some of
+those are:
+\begin{itemize}
+    \item Since there are severe GPU constraints, the maximum allowed length of the
+        input was set to 256. BERT can actually handle inputs of length up to 512.
+        The input was truncated to 256 by removing tokens far away from the actual answers.
+        Therefore, some information loss may have occurred, that prevents the model from
+        making actual good predictions. Exactly 12318 training examples have length
+        bigger than 256, which is roughly 1/10 of the training dataset. I tried increasing
+        the maxlen hyperprameter, but memory was always an issue, even with small batch sizes
+        like 16.
+    \item For the tokenization task, some questions where their answer is part
+        of a token, but not the whole token, have \textquote{misleading} labels. This was
+        not taken into account, as the model learns to predict answers only on the
+        token level, and not on the character level.
+\end{itemize}
+Some ideas that could help improve the performance of the model and mitigate the above
+problems, are:
+\begin{enumerate}
+    \item Increasing the maximum length of the BERT input to it's allowed 512. For
+        bigger inputs, use the \textquote{sliding window} technique mentioned in page 7.
+    \item Using bert-large instead of bert-base. The difference will be quite noticable,
+        but training slower as well.
+    \item Using a scheduler for the learning rate (Reducing On Plateau should work).
+    \item Using a second BERT model, that would take as input the question and the answer
+        tokens as a string of characters, and will learn to predict which characters
+        are part of the actual answer, e.g. if the predicted answer it the word
+        \textquote{sixth} and the ground trugh answer is \textquote{six}, then we would
+        feed to the second bert the question + \textquote{s i x t h}, and make it predict
+        the first 3 letters.
+\end{enumerate}
+
+\subsection*{Comparison with fine-tuned model}
+The fine-tuned (on SQuAD) that was used for comparison is the
+\textquote{bert-large-uncased-whole-word-masking-finetuned-squad}. On the SQuAD 2.0, it
+performed:
+\begin{enumerate}
+    \item \begin{itemize}
+            \item Training EM: 50.476, (HasAns: 74.272, NoHasAns: 2.974)
+            \item Validation EM: 39.265, (HasAns: 75.641, NoHasAns: 2.994)
+          \end{itemize}
+    \item \begin{itemize}
+            \item Training F1: 58.286, (HasAns: 85.998, NoHasAns: 2.974)
+            \item Validation F1: 44.042, (HasAns: 85.209, NoHasAns: 2.994)
+          \end{itemize}
+\end{enumerate}
+We notice that the model is not performing perfectly. This is due to the following
+reasons:
+\begin{enumerate}
+    \item If I am not mistaken, the model was fine tuned on SQuAD 1.0, which did not
+        contain questions with not answers. Hence, the low performance on questions
+        with no answer (which in turns lowers the overall scores in EM and F1).
+    \item The tokenizer I used to do the tokenization was from the pre-trained model
+        \textquote{bert-base-uncased}, and not the one for the same pre-trained model,
+        the \textquote{bert-large-uncased-whole-word-masking-finetuned-squad}.
+        Therefore, some mistakes could be happening in the tokenization, which affect
+        the whole meaning of a sentence (or at least it tricks it), making it
+        missclassify the start and end of a question.
+    \item From some question-answer examples, some tokens were removed from the context
+        in order to comply with the max bert-input-length parameter with value 256.
+        It is probable that some examples lose their \textquote{sense}, as some
+        context being removed could make a question with answer, unanswerable, 
+\end{enumerate}
+Still, even though the model is not performing perfectly, it out-performed my model.
+This should not take you by surprise as
+\begin{enumerate}
+    \item This model used bert-large instead of bert-base. The difference is quite
+        noticable in any application. Bert-large may be slower as it has 24 attention
+        layers instead of 12, but it's embeddings are way more accurate.
+    \item I don't have a GPU \smiley{}. The fine-tuned model was probably trained
+        on many GPUs, much better that the one Google Colab offers. I was not able
+        to run a Grid Search or any other technique of hyperprameter searching to
+        achieve better performance, as every epoch needs 1-2 hours.
+\end{enumerate}
+With that said, the only advantage of my model compared to the fine-tuned, is speed.
+Since I am using bert-base, it is almost thrice as fast during inference.
 
 \end{document}
 % ----------------    END OF DOCUMENT    ------------ %
